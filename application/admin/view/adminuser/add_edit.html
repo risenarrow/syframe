@@ -1,0 +1,88 @@
+{include file="public/header" /}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            管理员管理
+            <small>角色添加</small>
+        </h1>
+
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <!-- Info boxes -->
+        <div class="row">
+            <!-- Left col -->
+            <section class="col-lg-12 connectedSortable ui-sortable">
+                <!-- Custom tabs (Charts with tabs)-->
+
+                    <div class="box box-primary">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">填写</h3>
+                                </div>
+                                <!-- /.box-header -->
+                                <!-- form start -->
+                                <form role="form" method="post" id="form">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label for="role_name">角色名称</label>
+                                            <input type="text" class="form-control" id="role_name" name="data[role_name]" value="{$data['role_name']}"  placeholder="角色名称">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="description">角色描述</label>
+                                            <textarea id="description" class="form-control" name="data[description]">{$data['description']}</textarea>
+                                        </div>
+                                    </div>
+                                    <!-- /.box-body -->
+
+                                    <div class="box-footer">
+                                        <input type="hidden" name="id" value="{$data['id']}" />
+                                        <button type="button" id="submit" class="btn btn-primary">提交</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- /.nav-tabs-custom -->
+            </section>
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<script>
+    var url="{:url('admin/Adminuser/addEdit')}";
+    $(function(){
+        $("#submit").click(function(){
+            $.ajax({
+                'url':url,
+                'method':'post',
+                'data':$('#form').serialize(),
+                'dataType':'json',
+                'success':function(d){
+                    if(d.status == 1){
+                        layer.alert(d.msg,{'closeBtn':0},function(){
+                            if(d.url){
+                                window.location.href=d.url;
+                            }else{
+                                history.go(-1);
+                            }
+
+                        });
+                    }else{
+                        layer.alert(d.msg);
+                    }
+                }
+            });
+        });
+    })
+
+</script>
+{include file="public/footer"  /}

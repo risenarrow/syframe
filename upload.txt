@@ -1,0 +1,10 @@
+array (
+  'file' => 
+  array (
+    'name' => 'timg.jpg',
+    'type' => 'image/jpeg',
+    'tmp_name' => '/tmp/phpxitJLS',
+    'error' => 0,
+    'size' => 97092,
+  ),
+)

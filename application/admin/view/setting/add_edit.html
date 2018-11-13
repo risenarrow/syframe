@@ -1,0 +1,120 @@
+{include file="public/header" /}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            配置添加
+            <small>配置添加</small>
+        </h1>
+
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <!-- Info boxes -->
+        <div class="row">
+            <!-- Left col -->
+            <section class="col-lg-12 connectedSortable ui-sortable">
+                <!-- Custom tabs (Charts with tabs)-->
+
+                    <div class="box box-primary">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">填写</h3>
+                                </div>
+                                <!-- /.box-header -->
+                                <!-- form start -->
+                                <form role="form" method="post" id="form">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label for="name">配置名称</label>
+                                            <input type="text" class="form-control" id="name" name="data[name]" value="{$data['name']}"  placeholder="配置名称">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="title">配置标题</label>
+                                            <input type="text" class="form-control" id="title" value="{$data['title']}" name="data[title]" placeholder="配置标题">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="des">配置描述</label>
+                                            <textarea class="form-control" id="des" name="data[des]">{$data['des']}</textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>配置类型</label>
+                                            <select name="data[type_id]" class="form-control">
+                                                {foreach name='configTypes' item='item' key = 'key'}
+                                                <option value="{$key}" {if $key == $data['type_id']} selected {/if}>{$item}</option>
+                                                {/foreach}
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>字符类型</label>
+                                            <select name="data[form_type]" class="form-control">
+                                                {foreach name='form_type' item='item' key = 'key'}
+                                                <option value="{$key}" {if $key == $data['form_type']} selected {/if}>{$item}</option>
+                                                {/foreach}
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="default_val">配置默认值</label>
+                                            <input type="text" class="form-control" id="default_val" name="data[default_val]" value="{$data['default_val']}" placeholder="配置默认值">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="config_item">配置项</label>
+                                            <textarea class="form-control" id="config_item" name="data[config_item]">{$data['config_item']}</textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="config_item">排序</label>
+                                            <input type="text" class="form-control" id="sort" name="data[sort]" value="{$data['sort']}" placeholder="">
+                                        </div>
+                                    </div>
+                                    <!-- /.box-body -->
+
+                                    <div class="box-footer">
+                                        <input type="hidden" name="id" value="{$data['id']}" />
+                                        <button type="button" id="submit" class="btn btn-primary">提交</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- /.nav-tabs-custom -->
+            </section>
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<script>
+    var url="{:url('admin/Setting/addEdit')}";
+    $(function(){
+        $("#submit").click(function(){
+            $.ajax({
+                'url':url,
+                'method':'post',
+                'data':$('#form').serialize(),
+                'dataType':'json',
+                'success':function(d){
+                    if(d.status == 1){
+                        layer.alert(d.msg,{'closeBtn':0},function(){
+                            if(d.url){
+                                window.location.href=d.url;
+                            }else{
+                                history.go(-1);
+                            }
+
+                        });
+                    }else{
+                        layer.alert(d.msg);
+                    }
+                }
+            });
+        });
+    })
+
+</script>
+{include file="public/footer"  /}

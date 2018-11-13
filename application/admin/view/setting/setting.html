@@ -1,0 +1,139 @@
+{include file="public/header" /}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            配置
+            <small>设置网站</small>
+        </h1>
+
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <!-- Info boxes -->
+        <div class="row">
+
+            <!-- Left col -->
+            <section class="col-lg-12 connectedSortable ui-sortable">
+                <div class="nav-tabs-custom" style="cursor: move;">
+                    <!-- Tabs within a box -->
+                    <ul class="nav nav-tabs  ui-sortable-handle">
+                        {foreach name='configType'  key = 'key' item='vo'}
+                        <li {if condition='$key eq $type_id'}class="active"{/if}><a href="{:url('admin/Setting/setting',array('type_id'=>$key))}" >{$vo}</a></li>
+                        {/foreach}
+                    </ul>
+                </div>
+                <!-- Custom tabs (Charts with tabs)-->
+
+                    <div class="box box-primary">
+                        <div class="row">
+                            <div class="col-lg-4">
+
+                                <!-- /.box-header -->
+                                <!-- form start -->
+                                <form role="form" method="post" id="form">
+                                    <div class="box-body">
+                                        {foreach name='configList' item='vo'}
+
+                                        <div class="form-group">
+                                            <label for="{$vo['name']}">{$vo['title']}</label>
+                                            {if $vo['form_type'] eq 1}
+                                            <input type="text" class="form-control" id="{$vo['name']}" name="data[{$vo['name']}]" value="{$vo['value']}"  >
+                                            {/if}
+                                            {if $vo['form_type'] eq 2}
+                                            <input type="number"  class="form-control" id="{$vo['name']}" value="{$vo['value']}" name="data[{$vo['name']}]" >
+                                            {/if}
+                                            {if $vo['form_type'] eq 3}
+                                            <textarea class="form-control" id="{$vo['name']}" name="data[{$vo['name']}]">{$vo['value']}</textarea>
+                                            {/if}
+                                            {if $vo['form_type'] eq 4}
+                                            <div class="radio">
+                                            <button class="btn btn-success" id="browse_{$vo['name']}">选择文件</button>
+                                            <input type="hidden" readonly value="{$vo['value']}"  id="{$vo['name']}" name="data[{$vo['name']}]" />
+                                            <img src="__UPLOAD__{$vo['value']}" class="img-thumbnail w140"  id="browse_img_{$vo['name']}" {if !$vo['value']}style="display:none"{/if}  />
+                                            {:upload_one_thumb_js('browse_'.$vo['name'],url('admin/upload/upload',array('mod'=>'setting')),'browse_img_'.$vo['name'],$vo['name'])}
+                                            </div>
+                                            {/if}
+                                            {if $vo['form_type'] eq 5}
+                                            <div class="radio">
+                                                {foreach name='vo["list_arr"]' item='val' key="key"}
+                                                <label>
+                                                    <input type="radio" name="data[{$vo['name']}]" id="data[{$vo['name']}]{$key}" value="{$val[0]}" {if $val[2] eq '1'}checked{/if}>
+                                                    {$val[1]}
+                                                </label>
+                                                {/foreach}
+                                            </div>
+                                            {/if}
+                                            {if $vo['form_type'] eq 6}
+                                            <div class="checkbox">
+                                                {foreach name='vo["list_arr"]' item='val' key="key"}
+                                                <label>
+                                                    <input type="checkbox" name="data[{$vo['name']}][]" value=" {$val[0]}" {if $val[2] eq '1'}checked{/if} >
+                                                    {$val[1]}
+                                                </label>
+                                                {/foreach}
+                                            </div>
+                                            {/if}
+                                            {if $vo['des']}<p class="help-block">{$vo['des']}</p>{/if}
+                                        </div>
+
+                                        {/foreach}
+                                    </div>
+                                    <!-- /.box-body -->
+
+                                    <div class="box-footer">
+                                        <input type="hidden" name="type_id" value="{$type_id}" />
+                                        <button type="button" id="submit" class="btn btn-primary">提交</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-7">
+                                <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
+                                    {$page}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- /.nav-tabs-custom -->
+            </section>
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<script>
+    var url="{:url('admin/Setting/settingEdit')}";
+    $(function(){
+        $("#submit").click(function(){
+            $.ajax({
+                'url':url,
+                'method':'post',
+                'data':$('#form').serialize(),
+                'dataType':'json',
+                'success':function(d){
+                    if(d.status == 1){
+                        layer.alert(d.msg,{'closeBtn':0},function(){
+                            if(d.url){
+                                window.location.href=d.url;
+                            }else{
+                                history.go(-1);
+                            }
+
+                        });
+                    }else{
+                        layer.alert(d.msg);
+                    }
+                }
+            });
+        });
+    })
+
+</script>
+{include file="public/footer"  /}

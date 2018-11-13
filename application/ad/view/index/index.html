@@ -1,0 +1,114 @@
+{include file="admin@public/header" /}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            广告管理
+            <small>广告列表</small>
+        </h1>
+        <!--<ol class="breadcrumb">-->
+        <!--<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>-->
+        <!--<li class="active">配置</li>-->
+        <!--</ol>-->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <!-- Info boxes -->
+        <div class="row">
+            <!-- Left col -->
+            <section class="col-lg-12 connectedSortable ui-sortable">
+                <!-- Custom tabs (Charts with tabs)-->
+                <div class="nav-tabs-custom" style="cursor: move;">
+                    <!-- Tabs within a box -->
+                    <div class="box-header with-border">
+                        <div class="box-tools pull-right">
+                            <div class="has-feedback">
+                                <input type="text" class="form-control input-sm" placeholder="Search Mail">
+                                <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                            </div>
+                        </div>
+                        <!-- /.box-tools -->
+                    </div>
+                    <div class="box-body">
+                        <div class="tab-content no-padding">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                                        <thead>
+                                        <tr role="row">
+                                            <th class="sorting" tabindex="0"  rowspan="1" colspan="1" ><input class="selectall" type="checkbox"/></th>
+                                            <th class="sorting_asc" tabindex="0"  rowspan="1" colspan="1" >广告位</th>
+                                            <th class="sorting" tabindex="0"  rowspan="1" colspan="1" >图片</th>
+                                            <th class="sorting" tabindex="0"  rowspan="1" colspan="1" >广告标题</th>
+                                            <th class="sorting" tabindex="0"  rowspan="1" colspan="1" >广告描述</th>
+                                            <th class="sorting" tabindex="0"  rowspan="1" colspan="1" >状态</th>
+                                            <th class="sorting" tabindex="0"  rowspan="1" colspan="1" >添加时间</th>
+                                            <th class="sorting" tabindex="0"  rowspan="1" colspan="1" >操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {if $adlist}
+                                        {foreach name='adlist' item='vo' key='key'}
+                                        <tr role="row" class="odd">
+                                            <td><input type="checkbox" class="selectitem" value="{$vo['id']}" /> </td>
+                                            <td class="sorting_1">{$vo['position_name']}</td>
+                                            <td><img class="img-responsive" src="{$vo['img_path']}" /> </td>
+                                            <td>{$vo['title']}</td>
+                                            <td>{$vo['des']}</td>
+                                            <td>{if $vo['status'] == 1}启用{else}禁用{/if}</td>
+                                            <td>{$vo['add_time']|date='Y-m-d H:i:s',###}</td>
+                                            <td>
+                                                <a href="{:url('Ad/Index/addEdit',['id'=>$vo['id']])}"  class="btn btn-inline btn-success">编辑</a>
+                                                <a href="{:url('Ad/Index/del',['id'=>$vo['id']])}" onclick="confirm('确定要删除吗？') || false;"  class="btn btn-inline btn-success">删除</a>
+                                            </td>
+                                        </tr>
+                                        {/foreach}
+                                        {else}
+                                        <tr role="row" class="odd">
+                                            <td colspan="5" align="center">暂无数据~!</td>
+                                        </tr>
+                                        {/if}
+                                        </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <th rowspan="1" colspan="1"></th>
+                                            <th rowspan="1" colspan="1">广告位</th>
+                                            <th rowspan="1" colspan="1">图片</th>
+                                            <th rowspan="1" colspan="1">广告标题</th>
+                                            <th rowspan="1" colspan="1">广告描述</th>
+                                            <th rowspan="1" colspan="1">状态</th>
+                                            <th rowspan="1" colspan="1">添加时间</th>
+                                            <th rowspan="1" colspan="1">操作</th></tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
+                                        <a href="{:url('Ad/Index/addEdit')}" class="btn btn-success ">添加</a>
+                                        <a href="javascript:;" data-href="{:url('Ad/Index/del')}" class="btn  btn-danger batchdel">批量删除</a>
+                                    </div>
+                                </div>
+                                <div class="col-sm-7">
+                                    <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
+                                        {$page}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.nav-tabs-custom -->
+            </section>
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+{include file="admin@public/footer" /}

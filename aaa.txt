@@ -1,0 +1,10 @@
+array (
+  'id' => 3,
+  'parentid' => 2,
+  'name' => '网站设置',
+  'm' => 'admin',
+  'c' => 'setting',
+  'a' => 'setting',
+  'show' => 1,
+  'sort' => 0,
+)

@@ -1,0 +1,176 @@
+{include file="public/header" /}
+<style>
+    .arrow{margin-left:-15px;cursor: pointer}
+</style>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            管理员管理
+            <small>角色权限列表</small>
+        </h1>
+        <!--<ol class="breadcrumb">-->
+        <!--<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>-->
+        <!--<li class="active">配置</li>-->
+        <!--</ol>-->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <!-- Info boxes -->
+        <div class="row">
+            <!-- Left col -->
+            <section class="col-lg-12 connectedSortable ui-sortable">
+                <!-- Custom tabs (Charts with tabs)-->
+                <div class="nav-tabs-custom" style="cursor: move;">
+                    <!-- Tabs within a box -->
+                    <div class="box-body">
+                        <div class="tab-content no-padding">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <form action="" method="post" id="form">
+                                        <table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                                            <tbody>
+                                            {if $priv_list}
+                                            {foreach name='priv_list' item='vo' key='key'}
+                                            <tr role="row" class="node{$vo['id']}" data-parent="node{$vo['parentid']}" {if $vo['level'] neq '0'}style='display:none'{/if}>
+                                                <td class="sorting_1">
+
+                                                    {php}
+                                                    $str = "";
+                                                    for($i=1;$i<$vo['level'];$i++){
+                                                        $str .= "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
+                                                    }
+                                                    if($vo['level'] != '0'){
+                                                        $str .= '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
+                                                        if($vo['hassub'] == 1){
+                                                            $str .= ' <span class="glyphicon glyphicon-play arrow"></span>';
+                                                        }
+                                                        $str .= '|--';
+                                                    }else{
+                                                     $str .= ' <span class="glyphicon glyphicon-play arrow"></span>';
+                                                    }
+                                                    {/php}
+                                                    {$str}<input type="checkbox" name="menuid[]" {if in_array($vo['id'],$menuids)}checked{/if} value="{$vo['id']}" />{$vo['name']}
+                                                </td>
+                                            </tr>
+                                            {/foreach}
+                                            {else}
+                                            <tr role="row" class="odd">
+                                                <td colspan="5" align="center">暂无数据~!</td>
+                                            </tr>
+                                            {/if}
+                                            </tbody>
+                                        </table>
+                                        <input type="hidden" value="{$id}" name="id" />
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
+                                        <a href="javascript:;" id="submit" class="btn btn-success ">修改</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.nav-tabs-custom -->
+            </section>
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<script>
+    $(".arrow").click(function(){
+        var parentid =  $(this).parent().parent().attr('class');
+        var curclass= $(this).attr('class');
+        if(curclass.indexOf('active') != -1){
+            $(this).removeClass('active');
+            hidenode(parentid);
+        }else{
+            $(this).addClass('active');
+            shownode(parentid);
+        }
+    });
+    function hidenode(parentid){
+        $('[data-parent="'+parentid+'"]').each(function(n,e){
+            $(e).hide();
+            $(e).find('.arrow').removeClass('active');
+            hidenode($(e).attr('class'));
+        });
+    }
+    function shownode(parentid){
+        $('[data-parent="'+parentid+'"]').show();
+    }
+
+
+
+
+    $('input[type="checkbox"]').click(function(){
+        var parentid =  $(this).parent().parent().attr('class');
+        var myparentid =  $(this).parent().parent().attr('data-parent');
+        if($(this).is(':checked')){
+            checkallParent(myparentid);
+            checkall(parentid);
+        }else{
+            uncheckall(parentid);
+        }
+    });
+
+    function checkallParent(myparentid){
+        $("."+myparentid).find('input[type="checkbox"]:first').prop('checked',true);
+        var myparentid = $("."+myparentid).attr('data-parent');
+        if(myparentid){
+            checkallParent(myparentid);
+        }
+    }
+
+    function checkall(parentid){
+        $('[data-parent="'+parentid+'"]').each(function(n,e){
+            $(e).find('input[type="checkbox"]').prop('checked',true);
+            checkall($(e).attr('class'));
+        });
+    }
+    function uncheckall(parentid){
+        $('[data-parent="'+parentid+'"]').each(function(n,e){
+            $(e).find('input[type="checkbox"]').prop('checked',false);
+            uncheckall($(e).attr('class'));
+        });
+    }
+</script>
+
+<script>
+    var url="{:url('admin/Adminuser/rolePriv')}";
+    $(function(){
+        $("#submit").click(function(){
+            $.ajax({
+                'url':url,
+                'method':'post',
+                'data':$('#form').serialize(),
+                'dataType':'json',
+                'success':function(d){
+                    if(d.status == 1){
+                        layer.alert(d.msg,{'closeBtn':0},function(){
+                            if(d.url){
+                                window.location.href=d.url;
+                            }else{
+                                history.go(-1);
+                            }
+
+                        });
+                    }else{
+                        layer.alert(d.msg);
+                    }
+                }
+            });
+        });
+    })
+
+</script>
+
+{include file="public/footer"  /}
