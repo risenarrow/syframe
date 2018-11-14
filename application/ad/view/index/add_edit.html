@@ -1,0 +1,119 @@
+{include file="admin@public/header" /}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            广告管理
+            <small>广告添加</small>
+        </h1>
+
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <!-- Info boxes -->
+        <div class="row">
+            <!-- Left col -->
+            <section class="col-lg-12 connectedSortable ui-sortable">
+                <!-- Custom tabs (Charts with tabs)-->
+
+                    <div class="box box-primary">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">填写</h3>
+                                </div>
+                                <!-- /.box-header -->
+                                <!-- form start -->
+                                <div class="box-body">
+                                    <form role="form" method="post" id="form">
+                                        <div class="form-group">
+                                            <label>广告位</label>
+                                            <select name="data[position_id]" class="form-control">
+                                                <option value="">选择广告位</option>
+                                                {foreach name='position' item='vo'}
+                                                    <option value="{$vo['id']}" {if $vo['id'] == $data['position_id']}selected{/if} >{$vo['name']}</option>
+                                                {/foreach}
+                                            </select>
+                                        </div>
+                                            <div class="form-group">
+                                                <label for="name">广告标题</label>
+                                                <input type="text" class="form-control" id="name" name="data[title]" value="{$data['title']}"  placeholder="广告位名称">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="name">广告描述</label>
+                                                <textarea class="form-control" id="des" name="data[des]">{$data['des']}</textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="name">广告图片</label>
+                                                <div class="radio">
+                                                    <button class="btn btn-success" id="browse_img_path">选择文件</button>
+                                                    <input type="hidden" readonly value="{$data['img_path']}"  id="img_path" name="data[img_path]" />
+                                                    <img src="__UPLOAD__{$data['img_path']}" class="img-thumbnail w140"  id="browse_img_img_path" {if !$data['img_path']}style="display:none"{/if}  />
+                                                    {:upload_one_thumb_js('browse_img_path',url('admin/upload/upload',array('mod'=>'ad')),'browse_img_img_path','img_path')}
+                                                </div>
+
+                                            </div>
+                                        <div class="form-group">
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="data[status]" id="show1" value="1" {if $data['status'] eq 1}checked="checked"{/if}>
+                                                    启用
+                                                </label>
+                                                <label>
+                                                    <input type="radio" name="data[status]" id="show0" value="0" {if $data['status'] eq '0'}checked="checked"{/if} >
+                                                    禁用
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <!-- /.box-body -->
+
+                                        <div class="box-footer">
+                                            <input type="hidden" name="id" value="{$data['id']}" />
+                                            <button type="button" id="submit" class="btn btn-primary">提交</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- /.nav-tabs-custom -->
+            </section>
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<script>
+    var url="{:url('Ad/Index/addEdit')}";
+    $(function(){
+        $("#submit").click(function(){
+            $.ajax({
+                'url':url,
+                'method':'post',
+                'data':$('#form').serialize(),
+                'dataType':'json',
+                'success':function(d){
+                    if(d.status == 1){
+                        layer.alert(d.msg,{'closeBtn':0},function(){
+                            if(d.url){
+                                window.location.href=d.url;
+                            }else{
+                                history.go(-1);
+                            }
+
+                        });
+                    }else{
+                        layer.alert(d.msg);
+                    }
+                }
+            });
+        });
+    })
+
+</script>
+{include file="admin@public/footer"  /}
